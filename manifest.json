@@ -7,9 +7,15 @@
         "default_icon": "icons/trade.png"
     },
     "permissions": [
-        "host",
-        "activeTab"
+        "activeTab",
+        "webRequest"
     ],
+    "host_permissions": [
+        "https://*.fantasycalc.com/*"
+    ],
+    "background": {
+        "service_worker": "dist/background.js"
+    },
     "content_scripts": [
         {
             "matches": [

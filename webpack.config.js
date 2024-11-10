@@ -6,6 +6,7 @@ module.exports = {
     // Entry configuration for multiple files
     entry: {
         content: './src/content.tsx',
+        background: './src/background.ts',
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
