@@ -1,5 +1,12 @@
 console.log('loading background.ts')
 
+interface LeagueDetailsMessage {
+    leagueId: string,
+    site: string | null
+}
+
+let pendingRequests: LeagueDetailsMessage[] = [];
+
 chrome.webRequest.onCompleted.addListener(
     (details) => {
         console.log(' url ==> ' + details.url)
@@ -16,11 +23,28 @@ chrome.webRequest.onCompleted.addListener(
             // Now, you can send this info to your content script or popup using messaging
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 if (tabs[0] && tabs[0].id) {
-                    chrome.tabs.sendMessage(tabs[0].id, { leagueId, site });
+                    const message: LeagueDetailsMessage = { leagueId, site };
+                    chrome.tabs.sendMessage(tabs[0].id, message);
+                } else {
+                    pendingRequests.push({ leagueId, site });
                 }
             });
+            // pendingRequests.push({ leagueId, site });
         }
     },
-    // { urls: ["https://api.fantasycalc.com/leagues/*"] }
-    { urls: ['*://*/*'] }  // Match all URLs for debugging
+    { urls: ["https://*.fantasycalc.com/leagues/*"] }
+    // { urls: ['*://*/*'] }  // Match all URLs for debugging
 );
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    console.log('tab changed to: ' + tabId)
+    if (changeInfo.status === 'complete' && tab.active) {
+        // Send all pending requests to the content script
+        while (pendingRequests.length > 0) {
+            const request = pendingRequests.shift();
+            if (request) {
+                chrome.tabs.sendMessage(tabId, request);
+            }
+        }
+    }
+});
