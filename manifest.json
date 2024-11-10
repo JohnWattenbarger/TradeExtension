@@ -1,24 +1,23 @@
 {
     "manifest_version": 3,
-    "name": "FantasyCalc Trade Analyzer",
+    "name": "Trade Analyzer",
     "version": "1.0",
-    "description": "Analyze player trade values and suggest trades to improve teams.",
+    "description": "Analyze trade values for fantasy football",
+    "action": {
+        "default_popup": "dist/popup.html",
+        "default_icon": "icons/trade.png"
+    },
     "permissions": [
-        "scripting",
         "activeTab"
     ],
     "content_scripts": [
         {
             "matches": [
-                "https://www.fantasycalc.com/*"
+                "https://fantasycalc.com/*"
             ],
             "js": [
                 "dist/content.js"
             ]
         }
-    ],
-    "action": {
-        "default_popup": "dist/popup.html",
-        "default_icon": "icon.png"
-    }
+    ]
 }
