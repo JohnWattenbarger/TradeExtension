@@ -1,11 +1,24 @@
+import { League } from "./types/models";
+import { LeagueDetailsMessage, MessageTypes } from "./types/types";
+
 console.log('loading background.ts')
 
-interface LeagueDetailsMessage {
-    leagueId: string,
-    site: string | null
-}
-
 let pendingRequests: LeagueDetailsMessage[] = [];
+let headersMap: Map<string, chrome.webRequest.HttpHeader[] | undefined> = new Map<string, chrome.webRequest.HttpHeader[] | undefined>();
+
+// Listen to capture headers
+chrome.webRequest.onBeforeSendHeaders.addListener(
+    (details) => {
+        // Save headers of the request if it's a target API call
+        if (details.url.includes("fantasycalc.com")) {
+            // requestHeaders = details.requestHeaders || [];
+            headersMap.set(details.url, details.requestHeaders);
+        }
+        return { requestHeaders: details.requestHeaders };
+    },
+    { urls: ["*://*.fantasycalc.com/*"] },
+    ["requestHeaders"]
+);
 
 chrome.webRequest.onCompleted.addListener(
     (details) => {
@@ -23,10 +36,11 @@ chrome.webRequest.onCompleted.addListener(
             // Now, you can send this info to your content script or popup using messaging
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 if (tabs[0] && tabs[0].id) {
-                    const message: LeagueDetailsMessage = { leagueId, site };
-                    chrome.tabs.sendMessage(tabs[0].id, message);
+                    const message: LeagueDetailsMessage = { url: details.url, leagueId, site };
+                    // chrome.tabs.sendMessage(tabs[0].id, message);
+                    sendMessage(tabs[0].id, message)
                 } else {
-                    pendingRequests.push({ leagueId, site });
+                    pendingRequests.push({ url: details.url, leagueId, site });
                 }
             });
             // pendingRequests.push({ leagueId, site });
@@ -43,8 +57,35 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         while (pendingRequests.length > 0) {
             const request = pendingRequests.shift();
             if (request) {
-                chrome.tabs.sendMessage(tabId, request);
+                // chrome.tabs.sendMessage(tabId, request);
+                sendMessage(tabId, request)
             }
         }
     }
 });
+
+const sendMessage = (tabId: number, message: LeagueDetailsMessage) => {
+    console.log('sending message...')
+
+    // const headers = headersMap.get(url);
+    const headers = new Headers();
+    headersMap.get(message.url)?.forEach(header => {
+        headers.append(header.name, header.value || '');
+    })
+
+    // Fetch the data with the original headers
+    fetch(message.url, { method: 'GET', headers })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then((data: League) => {
+            console.log('Received response, fully sending message now.');
+            chrome.tabs.sendMessage(tabId, { ...message, data, type: MessageTypes.LEAGUE_DETAILS });
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+};

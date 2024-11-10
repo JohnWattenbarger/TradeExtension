@@ -2,25 +2,39 @@ import React from 'react';
 // import ReactDOM from 'react-dom';
 import ReactDOM from 'react-dom/client';
 import TradeResults from './components/tradeResults';
+import { MessageTypes } from '../types/types';
+import { League } from '../types/models';
+
+// TODO: better share this between background and tradeCalculator
+interface LeagueInfoMessage {
+    type: MessageTypes;
+    leagueId: string;
+    site: string;
+    data: League;
+}
 
 // Your trade calculator component
 const TradeCalculator = () => {
+    console.log('New TradeCalculator')
     const [results, setResults] = React.useState<string[]>([]);
-    const [leagueInfo, setLeagueInfo] = React.useState<{ leagueId: string; site: string } | null>(null);
+    const [leagueInfo, setLeagueInfo] = React.useState<{ leagueId: string; site: string, data: League } | null>(null);
 
     React.useEffect(() => {
-        // Listen for the message from the background script
-        chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        const handleMessage = (message: LeagueInfoMessage, sender: any, sendResponse: any) => {
             console.log('received message: ' + JSON.stringify(message));
-            if (message.type === 'SET_LEAGUE_INFO') {
+            if (message.type === MessageTypes.LEAGUE_DETAILS) {
                 // Update the state with the received data
-                setLeagueInfo({ leagueId: message.leagueId, site: message.site });
+                setLeagueInfo({ leagueId: message.leagueId, site: message.site, data: message.data });
             }
-        });
+        };
+
+        // Listen for the message from the background script
+        chrome.runtime.onMessage.addListener(handleMessage);
 
         // Clean up the listener when the component unmounts
         return () => {
-            chrome.runtime.onMessage.removeListener(() => { });
+            console.log('removing listener');
+            chrome.runtime.onMessage.removeListener(handleMessage);
         };
     }, []);
 
@@ -41,6 +55,7 @@ const TradeCalculator = () => {
                         <h2>League Info</h2>
                         <p>League ID: {leagueInfo.leagueId}</p>
                         <p>Site: {leagueInfo.site}</p>
+                        <p>Data: {`League: ${leagueInfo.data.name}.  Teams: ${JSON.stringify(leagueInfo.data.teams.map(t => t.name))}`}</p>
                     </div>
                 ) : (
                     <p>Loading league info...</p>
