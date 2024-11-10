@@ -4,20 +4,23 @@
     "version": "1.0",
     "description": "Analyze trade values for fantasy football",
     "action": {
-        "default_popup": "dist/popup.html",
         "default_icon": "icons/trade.png"
     },
     "permissions": [
+        "host",
         "activeTab"
     ],
     "content_scripts": [
         {
             "matches": [
-                "https://fantasycalc.com/*"
+                "https://*.fantasycalc.com/*"
             ],
             "js": [
                 "dist/content.js"
             ]
         }
-    ]
+    ],
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self';"
+    }
 }
