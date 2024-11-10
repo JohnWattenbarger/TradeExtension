@@ -1,0 +1,24 @@
+{
+    "manifest_version": 3,
+    "name": "FantasyCalc Trade Analyzer",
+    "version": "1.0",
+    "description": "Analyze player trade values and suggest trades to improve teams.",
+    "permissions": [
+        "scripting",
+        "activeTab"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://www.fantasycalc.com/*"
+            ],
+            "js": [
+                "dist/content.js"
+            ]
+        }
+    ],
+    "action": {
+        "default_popup": "dist/popup.html",
+        "default_icon": "icon.png"
+    }
+}
