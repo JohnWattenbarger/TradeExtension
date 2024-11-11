@@ -1,0 +1,60 @@
+Best Trades:
+
+TOP:
+ > [Kareem] Josh Allen - Garrett Wilson ==> +2976 / +2053, diff: 764
+ > [Show Me] Josh Allen - Nico Collins ==> +2396 / +829, diff: 184
+ > [Show Me] Josh Allen - Puka ==> +2242 / +983, diff: 30
+ > [Kareem] Jayden Daniels - Terry McLaurin ==> +1970 / +3059, diff: -242
+ > [Show Me] Jayden Daniels - Zay Flowers ==> +1932 / +1293, diff: -280
+ > [Kareem] Josh Allen - Drake London ==> +1719 / +3310, diff: -493
+
+Kareem
+ > Josh Allen - Garrett Wilson ==> +2976 / +2053, diff: 764
+ > Josh Allen - Drake London ==> +1719 / +3310, diff: -493
+ > Jayden Daniels - Drake London ==> +3543 / +1486, diff: 1331
+ > Jayden Daniels - Terry McLaurin ==> +1970 / +3059, diff: -242
+ > Jayden Daniels - Brian Thomas ==> +836 / +3059, diff: -1376
+Luke
+ > Jayden Daniels - MHJ ==> +1307 / +1061, diff: -905
+ > Josh Allen - KW3 ==> +1028 / +792, diff: -636
+ > Jayden Daniels - D'Andre Swift ==> +899 / +921, diff: -765
+ > Brian Robinson - Tank Dell ==> +154 / +353, diff: -353
+ > Tracy - Dell ==> +113 / +394, diff: -394
+Show Me
+ > Josh Allen - Nico Collins ==> +2396 / +829, diff: 184
+ > Josh Allen - Puka ==> +2242 / +983, diff: 30
+ > Jayden Daniels - Zay Flowers ==> +1932 / +1293, diff: -280
+ > Josh Allen - George Kittle ==> +1737 / +1309, diff: -1071
+ > Jayden Daniels - Chase Brown ==> +597 / +2080, diff: -1067
+Triqem
+ > Josh Allen - Tyreek ==> +2546 / -1346, diff: 334
+ > Jayden Daniels - George Pickens ==> +863 / +337, diff: -1349
+ > Cook - Evans ==> +40 / +467, diff: -467
+Furgie
+ > Gibbs - St. Brown ==> +943 / +966, diff: 436
+ > James Cook - Metcalf ==> +292 / +1617, diff: -215
+ > James Cook - D. Adams ==> +449 / +1460, diff: -58
+ > B. Robinson - D. Hopkins ==> +768 / +1141, diff: 261
+ > Tracy - Hopkins ==> +727 / +1182, diff: 220
+Gabeltch
+ > Josh Allen - CD ==> +3478 / -2285, diff: 1266
+ > Jayden Daniels - Deebo ==> 2104 / -911, diff: -108
+ > Josh Allen - Jacobs ==> +233 / +491, diff: -1431
+ > Mark Andrew - Darnell Mooney ==> +255 / +75, diff: 1132
+DrGeroge
+ > Cook - McBride ==> +413 / +238, diff: -690
+
+
+
+
+
+
+Best Jared Trades:
+Houston:
+ > Khalil - B. Robinson ==> +896 / 0, diff: 896
+ > Khalil - Tracy ==> +937 / -41, diff: 937
+Show:
+ > Calvin Ridley - Sam Laporta ==> +1195 / 0, diff: 156
+Dr. George
+ > Khalil - Goedert ==> +339 / +248, diff: -700
+ > Calvin Ridley - Goedert ==> +416 / 171, diff: -623
