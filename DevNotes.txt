@@ -1,0 +1,6 @@
+To do:
+ > Check if options is getting loaded correctly
+ > Use the selected team to generate potential trades
+   > Info needed: Players traded, starter points gained per team, difference in player value
+ > Output/present the trade data
+   > Show the top 10 trades?
