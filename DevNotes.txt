@@ -4,3 +4,18 @@ To do:
    > Info needed: Players traded, starter points gained per team, difference in player value
  > Output/present the trade data
    > Show the top 10 trades?
+
+
+
+Trade Results View:
+
+Suggested Trades for <selectedTeam>
+------
+Trades with <otherTeam 1>:
+ ---
+ <selectedTeam> gives <player>   ||   <otherTeam 1> gives <player>
+ Player Value: ...     ||     Player Value: ...
+ Starter Value Gained: ...     ||     Starter Value Gained: ...
+ Net Player Value Difference: <trade.netValueDifference>   ||   Net Player Value Difference: <- trade.netValueDifference>
+ Original Team Value: <calculateStarter...>   ||   Original Team Value: <calculateStarter...>
+ New Team Value: <starterFromGain>   ||   New Team Value: <starterToGain>

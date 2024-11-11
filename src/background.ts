@@ -1,4 +1,4 @@
-import { League } from "./types/models";
+import { League } from "./types/httpModels";
 import { LeagueDetailsMessage, MessageTypes } from "./types/types";
 
 console.log('loading background.ts')

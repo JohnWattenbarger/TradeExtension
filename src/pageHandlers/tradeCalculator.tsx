@@ -3,8 +3,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import TradeResults from './components/tradeResults';
 import { MessageTypes } from '../types/types';
-import { League, Player, Team } from '../types/models';
+import { League, Player, Team } from '../types/httpModels';
 import StartersForm, { StarterCount } from './components/starterForm';
+import { findAllTrades } from './utils/tradeUtils';
+import { Trade } from '../types/tradeModels';
 
 // TODO: better share this between background and tradeCalculator
 interface LeagueInfoMessage {
@@ -17,7 +19,7 @@ interface LeagueInfoMessage {
 // Your trade calculator component
 const TradeCalculator = () => {
     console.log('New TradeCalculator')
-    const [results, setResults] = React.useState<string[]>([]);
+    const [results, setResults] = React.useState<Map<Team, Trade[]>>();
     const [leagueInfo, setLeagueInfo] = React.useState<{ leagueId: string; site: string } | null>(null);
     const [league, setLeague] = React.useState<League>();
     const [starterCounts, setStarterCounts] = React.useState<StarterCount>({ qb: 1, rb: 2, wr: 2, te: 1, flex: 1 });
@@ -26,6 +28,8 @@ const TradeCalculator = () => {
     // const isLoading = !league;
 
     React.useEffect(() => {
+        console.log('first render');
+
         // TODO: see why this is getting triggered continuously
         const handleMessage = (message: LeagueInfoMessage, sender: any, sendResponse: any) => {
             if (message.type === MessageTypes.LEAGUE_DETAILS && !(leagueInfo && league)) {
@@ -47,20 +51,30 @@ const TradeCalculator = () => {
     }, []);
 
     const suggestTrade = () => {
+        if (!league) throw `Unable to suggest trades. No team is selected.`;
         // Logic to fetch or generate trade suggestions
         // setResults(['Trade A', 'Trade B', 'Trade C']); // Example trade results
-        setResults(['Team: ' + selectedTeamId + ' selected'])
+        const selectedTeam = getSelectedTeam();
+        const allPossibleTrades = findAllTrades(league, selectedTeam, starterCounts);
+
+        // setResults(['Team: ' + selectedTeamId + ' selected'])
+        setResults(allPossibleTrades);
     };
 
-    const handleStartersSubmit = (starters: StarterCount) => {
-        setStarterCounts(starters);
-        // Use this starters data to calculate the Starter Points or other logic
-    };
+    const getSelectedTeam = () => {
+        // const selectedTeam = league?.teams.find(team => team.ownerId === selectedTeamId);
+        const selectedTeam = league?.teams.find(team => team.owner === selectedTeamId);
+        if (!selectedTeam) {
+            throw new Error("Unable to suggest trades. Error getting selected team details.");
+        }
+
+        return selectedTeam;
+    }
 
     function calculateStarterAndFlexValues(team: Team) {
         const players = team.players;
         // Sort players by value in descending order
-        const sortedPlayers = [...players].sort((a, b) => b.value - a.value);
+        const sortedPlayers = [...players].sort((a, b) => b.redraftValue - a.redraftValue);
 
         // Track how many starters we've assigned by position
         const positionCount: { [position: string]: number } = { QB: 0, RB: 0, WR: 0, TE: 0 };
@@ -69,9 +83,9 @@ const TradeCalculator = () => {
 
         // Separate starters from backups
         for (const player of sortedPlayers) {
-            if (positionCount[player.position] < getStarterCount(player.position)) {
+            if (positionCount[player.player.position] < getStarterCount(player.player.position)) {
                 starters.push(player);
-                positionCount[player.position] += 1;
+                positionCount[player.player.position] += 1;
             } else {
                 backups.push(player);  // Any player exceeding starter counts is a backup
             }
@@ -81,16 +95,8 @@ const TradeCalculator = () => {
         const flexPlayers = backups.slice(0, starterCounts.flex);
 
         // Calculate total starter and flex values
-        const starterValue = starters.reduce((total, player) => total + player.value, 0);
-        const flexValue = flexPlayers.reduce((total, player) => total + player.value, 0);
-
-        // return {
-        //     starterValue,
-        //     flexValue,
-        //     total: starterValue + flexValue,
-        //     starters,
-        //     flexPlayers
-        // };
+        const starterValue = starters.reduce((total, player) => total + player.redraftValue, 0);
+        const flexValue = flexPlayers.reduce((total, player) => total + player.redraftValue, 0);
 
         return starterValue + flexValue;
     }
@@ -147,8 +153,6 @@ const TradeCalculator = () => {
         <div>
             <button disabled={!leagueInfo} onClick={suggestTrade}>Suggest Trade</button>
 
-            {/* Conditionally render the TradeResults component if there are results */}
-            {results.length > 0 && <TradeResults results={results} />}
             {(leagueInfo && league) && <div>
                 {(leagueInfo && league) ? (
                     <div>
@@ -163,7 +167,7 @@ const TradeCalculator = () => {
             </div>}
             {(league && starterCounts) && <div>
                 <h1>Trade Calculator</h1>
-                <StartersForm onSubmit={handleStartersSubmit} />
+                <StartersForm starterCount={starterCounts} setStarterCount={setStarterCounts} />
 
                 {league.teams.map(team => (
                     <div key={team.owner}>
@@ -183,7 +187,7 @@ const TradeCalculator = () => {
                     {league.teams.map((team) => {
                         console.log('Rendering team: ' + team.name + ' - ' + team.owner);
                         return <option key={team.owner} value={team.owner}>
-                            {`${team.name} - ${team.owner}`}
+                            {`${team.name} - @${team.owner}`}
                         </option>
                     })}
                 </select>
@@ -192,6 +196,9 @@ const TradeCalculator = () => {
                     Find Trades
                 </button>
             </div>}
+
+            {/* Conditionally render the TradeResults component if there are results */}
+            {results && <TradeResults selectedTeam={getSelectedTeam()} starterCounts={starterCounts} topTradesCount={5} tradesMap={results} />}
         </div>
     );
 };

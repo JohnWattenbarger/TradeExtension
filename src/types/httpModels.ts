@@ -1,16 +1,20 @@
 export interface Player {
-    id: number;
-    name: string;
-    position: string;
-    maybeBirthday: string;
-    maybeHeight: string;
-    maybeWeight: number;
-    maybeCollege: string;
-    maybeTeam: string;
-    maybeAge: number;
-    maybeYoe: number;
-    espnId: string;
-    fleaflickerId: string;
+    player: {
+        id: number;
+        name: string;
+        mflId: string;
+        sleeperId: string;
+        position: string;
+        maybeBirthday: string;
+        maybeHeight: string;
+        maybeWeight: number;
+        maybeCollege: string;
+        maybeTeam: string;
+        maybeAge: number;
+        maybeYoe: number;
+        espnId: string;
+        fleaflickerId: string;
+    }
     value: number;
     overallRank: number;
     positionRank: number;
