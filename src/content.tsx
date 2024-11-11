@@ -1,6 +1,7 @@
 console.log("Trade Extension script loaded");
 
 import * as tradeCalculator from './pageHandlers/tradeCalculator';
+import './styles/styles.css';
 
 // Check the current URL and run specific page logic or render React components
 function loadPageScript() {

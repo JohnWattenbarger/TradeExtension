@@ -112,43 +112,6 @@ const TradeCalculator = () => {
         return 0;
     }
 
-    // const calculateStarterPoints = (team: Team) => {
-    //     // if (!starters) return 0; // If no starter info, return 0
-
-    //     let starterPoints = 0;
-    //     const players = team.players;
-
-    //     // Calculate starter points for each position
-    //     starterPoints += calculatePositionPoints(players, 'QB', starterCounts.qb);
-    //     starterPoints += calculatePositionPoints(players, 'RB', starterCounts.rb);
-    //     starterPoints += calculatePositionPoints(players, 'WR', starterCounts.wr);
-    //     starterPoints += calculatePositionPoints(players, 'TE', starterCounts.te);
-
-    //     // Handle Flex (RB/WR/TE) as the top non-starter player in these positions
-    //     starterPoints += calculateFlexPoints(players, starterCounts.flex);
-
-    //     return starterPoints;
-    // };
-
-    // const calculatePositionPoints = (players: Player[], position: string, numStarters: number) => {
-    //     const sortedPlayers = players
-    //         .filter(player => player.position === position)
-    //         .sort((a, b) => b.value - a.value); // Sort players by value (highest first)
-
-    //     // Select the top players based on the number of starters for this position
-    //     return sortedPlayers.slice(0, numStarters).reduce((total, player) => total + player.value, 0);
-    // };
-
-    // const calculateFlexPoints = (players: Player[], numFlex: number) => {
-    //     // Combine RB, WR, TE players and sort by value
-    //     const flexPlayers = [
-    //         ...players.filter(player => ['RB', 'WR', 'TE'].includes(player.position)),
-    //     ].sort((a, b) => b.value - a.value);
-
-    //     // Select the top non-starter flex players
-    //     return flexPlayers.slice(0, numFlex).reduce((total, player) => total + player.value, 0);
-    // };
-
     return (
         <div>
             <button disabled={!leagueInfo} onClick={suggestTrade}>Suggest Trade</button>

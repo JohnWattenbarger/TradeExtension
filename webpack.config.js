@@ -10,11 +10,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].js',  // Will preserve subfolders if needed
-        // filename: (pathData) => {
-        //     // Preserve folder structure relative to src/
-        //     return pathData.chunk.name.replace('src/', '') + '.js';
-        // },
+        filename: '[name].js',
     },
     module: {
         rules: [
@@ -23,26 +19,16 @@ module.exports = {
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
+            // Rule for .css files
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'],
+                exclude: /node_modules/,
+            }
         ],
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
     },
-    // devtool: 'eval-source-map',
-    // devtool: 'inline-source-map',
     devtool: 'source-map',
-    // watch: true, // automatically rebuilds on file changes
-    // plugins: [
-    //     new HtmlWebpackPlugin({
-    //         template: './src/index.html'
-    //     })
-    // ]
-    // optimization: {
-    //     minimize: false, // Disable minification in development
-    // },
-    // plugins: [
-    //     new webpack.DefinePlugin({
-    //         'process.env.NODE_ENV': JSON.stringify('development'),
-    //     }),
-    // ],
 };
