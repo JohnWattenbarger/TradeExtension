@@ -24,6 +24,7 @@ const TradeCalculator = () => {
     const [league, setLeague] = React.useState<League>();
     const [starterCounts, setStarterCounts] = React.useState<StarterCount>({ qb: 1, rb: 2, wr: 2, te: 1, flex: 1 });
     const [selectedTeamId, setSelectedTeamId] = React.useState('');
+    const [maxValueDiff, setMaxValueDiff] = React.useState<number>(1000);
 
     // const isLoading = !league;
 
@@ -112,6 +113,20 @@ const TradeCalculator = () => {
         return 0;
     }
 
+    const renderExtraTeamDetails = () => {
+        // return {(league && starterCounts) &&
+        //     {league.teams.map(team => (
+        //     <div key={team.owner}>
+        //         <h3>{team.name}</h3>
+        //         <p>Starter Points: {calculateStarterAndFlexValues(team)}</p>
+        //         {/* Render other team and player info here */}
+        //     </div>
+        // ))}
+        //     }
+
+        return <div></div>
+    }
+
     return (
         <div>
             <button disabled={!leagueInfo} onClick={suggestTrade}>Suggest Trade</button>
@@ -132,13 +147,19 @@ const TradeCalculator = () => {
                 <h1>Trade Calculator</h1>
                 <StartersForm starterCount={starterCounts} setStarterCount={setStarterCounts} />
 
-                {league.teams.map(team => (
-                    <div key={team.owner}>
-                        <h3>{team.name}</h3>
-                        <p>Starter Points: {calculateStarterAndFlexValues(team)}</p>
-                        {/* Render other team and player info here */}
-                    </div>
-                ))}
+                <div>
+                    <label>Max Allowed Player Value Difference:</label>
+                    <input
+                        type="number"
+                        value={maxValueDiff}
+                        onChange={(e) => {
+                            const newValue = parseInt(e.target.value);
+                            setMaxValueDiff(newValue)
+                        }}
+                    />
+                </div>
+
+                {renderExtraTeamDetails()}
 
                 <label htmlFor="team-select">Select a team:</label>
                 <select
@@ -161,7 +182,7 @@ const TradeCalculator = () => {
             </div>}
 
             {/* Conditionally render the TradeResults component if there are results */}
-            {results && <TradeResults selectedTeam={getSelectedTeam()} starterCounts={starterCounts} topTradesCount={5} tradesMap={results} />}
+            {results && <TradeResults selectedTeam={getSelectedTeam()} starterCounts={starterCounts} topTradesCount={5} tradesMap={results} maxValueDiff={maxValueDiff} onlyPositives={true} />}
         </div>
     );
 };

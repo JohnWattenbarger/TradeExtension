@@ -9,20 +9,41 @@ interface TradeResultProps {
     tradesMap: Map<Team, Trade[]>;
     starterCounts: StarterCount;
     topTradesCount: number;
+    maxValueDiff?: number;
+    onlyPositives?: boolean;
 }
 
-const TradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap, starterCounts, topTradesCount }) => {
+const TradeResult: React.FC<TradeResultProps> = ({ selectedTeam, tradesMap, starterCounts, topTradesCount, maxValueDiff, onlyPositives }) => {
     return (
         <div>
             <h2>Suggested Trades for {selectedTeam.name}</h2>
             <hr />
             {Array.from(tradesMap.entries()).map(([otherTeam, trades]) => {
+                console.log(' filter out <0 = ' + onlyPositives)
                 if (otherTeam !== selectedTeam) {
                     // Sort trades by net value difference (highest first)
-                    const sortedTrades = trades.sort((a, b) => b.tradeValue.combinedUpgradeGained - a.tradeValue.combinedUpgradeGained);
+                    let sortedTrades = trades.sort((a, b) => b.tradeValue.combinedUpgradeGained - a.tradeValue.combinedUpgradeGained);
 
                     // Get top 'n' trades
-                    const topTrades = sortedTrades.slice(0, topTradesCount);
+                    // Apply max value difference filter if specified
+                    if (maxValueDiff) {
+                        sortedTrades = sortedTrades.filter(
+                            trade => Math.abs(trade.tradeValue.netValueDifference) <= maxValueDiff
+                        );
+                    }
+                    // filter out negative returns for one team if specified
+                    if (onlyPositives) {
+                        // TODO: see if this is working? Looks like a negative starterTo slipped through
+                        sortedTrades = sortedTrades.filter(
+                            trade => { return (trade.tradeValue.starterFromGain > 0 && trade.tradeValue.starterToGain > 0) }
+                        );
+                    }
+                    // Return the full list if fewer than the desired top trades are available
+                    const topTrades = sortedTrades.length < topTradesCount
+                        ? sortedTrades
+                        : sortedTrades.slice(0, topTradesCount);
+
+                    // const topTrades = sortedTrades.slice(0, topTradesCount);
 
                     return (
                         <div key={otherTeam.ownerId}>
