@@ -25,6 +25,8 @@ const TradeCalculator = () => {
     const [starterCounts, setStarterCounts] = React.useState<StarterCount>({ qb: 1, rb: 2, wr: 2, te: 1, flex: 1 });
     const [selectedTeamId, setSelectedTeamId] = React.useState('');
     const [maxValueDiff, setMaxValueDiff] = React.useState<number>(1000);
+    const [onlyPositiveTrades, setOnlyPositiveTrades] = React.useState<boolean>(true);
+    const [topTradeCounts, setTopTradeCounts] = React.useState<number>(5);
 
     // const isLoading = !league;
 
@@ -75,77 +77,8 @@ const TradeCalculator = () => {
         return selectedTeam;
     }
 
-    function calculateStarterAndFlexValues(team: Team) {
-        const players = team.players;
-        // Sort players by value in descending order
-        const sortedPlayers = [...players].sort((a, b) => b.redraftValue - a.redraftValue);
-
-        // Track how many starters we've assigned by position
-        const positionCount: { [position: string]: number } = { QB: 0, RB: 0, WR: 0, TE: 0 };
-        const starters: Player[] = [];
-        const backups: Player[] = [];
-
-        // Separate starters from backups
-        for (const player of sortedPlayers) {
-            if (positionCount[player.player.position] < getStarterCount(player.player.position)) {
-                starters.push(player);
-                positionCount[player.player.position] += 1;
-            } else {
-                backups.push(player);  // Any player exceeding starter counts is a backup
-            }
-        }
-
-        // Select the top `numFlex` backups for the flex positions
-        const flexPlayers = backups.slice(0, starterCounts.flex);
-
-        // Calculate total starter and flex values
-        const starterValue = starters.reduce((total, player) => total + player.redraftValue, 0);
-        const flexValue = flexPlayers.reduce((total, player) => total + player.redraftValue, 0);
-
-        return starterValue + flexValue;
-    }
-
-    const getStarterCount = (position: string) => {
-        switch (position?.toLowerCase()) {
-            case 'qb': return starterCounts.qb;
-            case 'rb': return starterCounts.rb;
-            case 'wr': return starterCounts.wr;
-            case 'te': return starterCounts.te;
-        }
-
-        return 0;
-    }
-
-    const renderExtraTeamDetails = () => {
-        // return {(league && starterCounts) &&
-        //     {league.teams.map(team => (
-        //     <div key={team.owner}>
-        //         <h3>{team.name}</h3>
-        //         <p>Starter Points: {calculateStarterAndFlexValues(team)}</p>
-        //         {/* Render other team and player info here */}
-        //     </div>
-        // ))}
-        //     }
-
-        return <div></div>
-    }
-
     return (
         <div>
-            <button disabled={!leagueInfo} onClick={suggestTrade}>Suggest Trade</button>
-
-            {(leagueInfo && league) && <div>
-                {(leagueInfo && league) ? (
-                    <div>
-                        <h2>League Info</h2>
-                        <p>League ID: {leagueInfo.leagueId}</p>
-                        <p>Site: {leagueInfo.site}</p>
-                        <p>Data: {`League: ${league.name}.  Teams: ${JSON.stringify(league.teams.map(t => t.name))}`}</p>
-                    </div>
-                ) : (
-                    <p>Loading league info...</p>
-                )}
-            </div>}
             {(league && starterCounts) && <div>
                 <h1>Trade Calculator</h1>
                 <StartersForm starterCount={starterCounts} setStarterCount={setStarterCounts} />
@@ -161,8 +94,27 @@ const TradeCalculator = () => {
                         }}
                     />
                 </div>
-
-                {renderExtraTeamDetails()}
+                <div>
+                    <label>Trades Per Team:</label>
+                    <input
+                        type="number"
+                        value={topTradeCounts}
+                        onChange={(e) => {
+                            const newValue = parseInt(e.target.value);
+                            setTopTradeCounts(newValue)
+                        }}
+                    />
+                </div>
+                <div>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={onlyPositiveTrades}
+                            onChange={(e) => setOnlyPositiveTrades(e.target.checked)}
+                        />
+                        Show only positive trades
+                    </label>
+                </div>
 
                 <label htmlFor="team-select">Select a team:</label>
                 <select
@@ -185,7 +137,7 @@ const TradeCalculator = () => {
             </div>}
 
             {/* Conditionally render the TradeResults component if there are results */}
-            {results && <TradeResults selectedTeam={getSelectedTeam()} starterCounts={starterCounts} topTradesCount={5} tradesMap={results} maxValueDiff={maxValueDiff} onlyPositives={true} />}
+            {results && <TradeResults selectedTeam={getSelectedTeam()} topTradesCount={topTradeCounts} tradesMap={results} maxValueDiff={maxValueDiff} onlyPositives={onlyPositiveTrades} />}
         </div>
     );
 };

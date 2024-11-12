@@ -2,14 +2,14 @@ To do:
  > Create a simplified view of Results
    > Add a toggle in tradeCalculator
    > Should look like example.txt
- > Add a toggle in tradeCalculator (or maybe a min input) for only positive values
- > Add an input for how many trades to show (currently set to 5)
  > Create a "Top" column that shows the trades that give your team the biggest boost
+ > Add a username next to team names
+ > Separate out my rendering to a better location
+ > See if clicking the logo should turn extension on/off
  > Cleanup code
    > Separate rendering out better
    > Clear TODOs
- > See if clicking the logo should turn extension on/off
- > Separate out my rendering to a better location
+ > Add better styling
 
 
 
