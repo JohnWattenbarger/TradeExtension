@@ -38,6 +38,9 @@ const TradeCalculator = () => {
                 // Update the state with the received data
                 setLeagueInfo({ leagueId: message.leagueId, site: message.site });
                 setLeague(message.data);
+
+                // Send a response back to indicate successful handling
+                sendResponse({ success: true });
             }
         };
 

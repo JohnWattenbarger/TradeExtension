@@ -11,7 +11,6 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
     (details) => {
         // Save headers of the request if it's a target API call
         if (details.url.includes("fantasycalc.com")) {
-            // requestHeaders = details.requestHeaders || [];
             headersMap.set(details.url, details.requestHeaders);
         }
         return { requestHeaders: details.requestHeaders };
@@ -37,13 +36,11 @@ chrome.webRequest.onCompleted.addListener(
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 if (tabs[0] && tabs[0].id) {
                     const message: LeagueDetailsMessage = { url: details.url, leagueId, site };
-                    // chrome.tabs.sendMessage(tabs[0].id, message);
                     sendMessage(tabs[0].id, message)
                 } else {
                     pendingRequests.push({ url: details.url, leagueId, site });
                 }
             });
-            // pendingRequests.push({ leagueId, site });
         }
     },
     { urls: ["https://*.fantasycalc.com/leagues/*"] }
@@ -57,7 +54,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         while (pendingRequests.length > 0) {
             const request = pendingRequests.shift();
             if (request) {
-                // chrome.tabs.sendMessage(tabId, request);
                 sendMessage(tabId, request)
             }
         }
@@ -73,6 +69,14 @@ const sendMessage = (tabId: number, message: LeagueDetailsMessage) => {
         headers.append(header.name, header.value || '');
     })
 
+    // if (headers?.some(header => header.name === "X-Extension-Source" && header.value === "background-script")) {
+    const isSentFromBackgroundFile = headers.get("X-Extension-Source") === "background-script";
+    if (isSentFromBackgroundFile) {
+        return; // Ignore this request
+    } else {
+        headers.append("X-Extension-Source", "background-script")
+    }
+
     // Fetch the data with the original headers
     fetch(message.url, { method: 'GET', headers })
         .then(response => {
@@ -83,9 +87,29 @@ const sendMessage = (tabId: number, message: LeagueDetailsMessage) => {
         })
         .then((data: League) => {
             console.log('Received response, fully sending message now.');
-            chrome.tabs.sendMessage(tabId, { ...message, data, type: MessageTypes.LEAGUE_DETAILS });
+            sendMessageWithRetry({ ...message, data, type: MessageTypes.LEAGUE_DETAILS })
         })
         .catch(error => {
             console.error('Fetch error:', error);
         });
+};
+
+const sendMessageWithRetry = (message: any, retries = 15, delay = 500) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (tabs[0]?.id) {
+            chrome.tabs.sendMessage(tabs[0].id, message, (response) => {
+                if (chrome.runtime.lastError || !response) {
+                    // Retry if there's an error or no response and retries are left
+                    if (retries > 0) {
+                        console.log(`Retrying... attempts left: ${retries}`);
+                        setTimeout(() => sendMessageWithRetry(message, retries - 1, delay), delay);
+                    } else {
+                        console.error("Failed to communicate with content script after multiple attempts.");
+                    }
+                } else {
+                    console.log("Message sent successfully:", response);
+                }
+            });
+        }
+    });
 };

@@ -1,5 +1,4 @@
 To do:
- > Check why background continuosly sends messages
  > Create a simplified view of Results
    > Add a toggle in tradeCalculator
    > Should look like example.txt
@@ -9,6 +8,8 @@ To do:
  > Cleanup code
    > Separate rendering out better
    > Clear TODOs
+ > See if clicking the logo should turn extension on/off
+ > Separate out my rendering to a better location
 
 
 
