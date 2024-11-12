@@ -18,7 +18,7 @@ interface TradeResultProps {
 const TradeResult: React.FC<TradeResultProps> = (props: TradeResultProps) => {
     return (
         <>
-            {props.simplifiedView ? <DetailedTradeResult {...props} /> : <SimpleTradeResult {...props} />}
+            {props.simplifiedView ? <SimpleTradeResult {...props} /> : <DetailedTradeResult {...props} />}
         </>
     );
 };
