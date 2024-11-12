@@ -1,12 +1,12 @@
 To do:
- > Add a username next to team names
  > Separate out my rendering to a better location
  > See if clicking the logo should turn extension on/off
- > Publish so others can use it
  > Cleanup code
    > Separate rendering out better
    > Clear TODOs
  > Add better styling
+ > Add a rating to trades
+   > Likelihood of acceptance, impact for you, impact for them, value (Gains compared to player diff)
 
 
 
