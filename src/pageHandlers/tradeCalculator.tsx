@@ -27,6 +27,7 @@ const TradeCalculator = () => {
     const [maxValueDiff, setMaxValueDiff] = React.useState<number>(1000);
     const [onlyPositiveTrades, setOnlyPositiveTrades] = React.useState<boolean>(true);
     const [topTradeCounts, setTopTradeCounts] = React.useState<number>(5);
+    const [simpleView, setSimpleView] = React.useState<boolean>(false);
 
     // const isLoading = !league;
 
@@ -80,7 +81,7 @@ const TradeCalculator = () => {
     return (
         <div>
             {(league && starterCounts) && <div>
-                <h1>Trade Calculator</h1>
+                <h1>Trade Finder</h1>
                 <StartersForm starterCount={starterCounts} setStarterCount={setStarterCounts} />
 
                 <div>
@@ -116,6 +117,17 @@ const TradeCalculator = () => {
                     </label>
                 </div>
 
+                <div>
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={simpleView}
+                            onChange={(e) => setSimpleView(e.target.checked)}
+                        />
+                        Simplified Results View
+                    </label>
+                </div>
+
                 <label htmlFor="team-select">Select a team:</label>
                 <select
                     id="team-select"
@@ -137,7 +149,7 @@ const TradeCalculator = () => {
             </div>}
 
             {/* Conditionally render the TradeResults component if there are results */}
-            {results && <TradeResults selectedTeam={getSelectedTeam()} topTradesCount={topTradeCounts} tradesMap={results} maxValueDiff={maxValueDiff} onlyPositives={onlyPositiveTrades} />}
+            {results && <TradeResults selectedTeam={getSelectedTeam()} topTradesCount={topTradeCounts} tradesMap={results} maxValueDiff={maxValueDiff} onlyPositives={onlyPositiveTrades} simplifiedView={simpleView} />}
         </div>
     );
 };

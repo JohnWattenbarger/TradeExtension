@@ -3,6 +3,7 @@ import { StarterCount } from './starterForm';
 import { Team } from '../../types/httpModels';
 import { Trade } from '../../types/tradeModels';
 import DetailedTradeResult from './detailedTradeResults';
+import SimpleTradeResult from './simpleTradeResults';
 // import { calculateStarterAndFlexValues } from '../utils/tradeUtils';
 
 interface TradeResultProps {
@@ -16,7 +17,9 @@ interface TradeResultProps {
 
 const TradeResult: React.FC<TradeResultProps> = (props: TradeResultProps) => {
     return (
-        <DetailedTradeResult {...props} />
+        <>
+            {props.simplifiedView ? <DetailedTradeResult {...props} /> : <SimpleTradeResult {...props} />}
+        </>
     );
 };
 
