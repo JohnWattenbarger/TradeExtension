@@ -5,6 +5,7 @@ To do:
    > Separate rendering out better
    > Clear TODOs
  > Add better styling
+ > Add a "Only high impact trades" toggle (only show trades where both teams gain >= 1000 points)
  > Add a rating to trades
    > Likelihood of acceptance, impact for you, impact for them, value (Gains compared to player diff)
 

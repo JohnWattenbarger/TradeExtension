@@ -1,0 +1,22 @@
+App Basics:
+
+This is a chrome extension that allows players to find optimal trades in their fantasy football league.
+
+How to use:
+
+Go to "https://www.fantasycalc.com/trade-calculator". When using this extension there should be extra tade finder fields to interact with (if they are missing try refreshing).
+
+Input your league settings, and other preferences. Select a team from your league, and click "Find Trades" to see what trades are available.
+
+Trade Result Fields:
+
+Detailed View:
+- Trade Partner
+- Player given | Player given value
+- Team Value Before Trade: Combined Team Player Value before the trade (only including starting players)
+- Team Value After Trade: Combined Team Player Value after the trade (only including starting players)
+- Team Improvement: How much value you gained in starting players. So if for example you give a backup QB you lose no starting player value.
+- Player Value Gained: Difference in value between the player you are receiving, and the player you are giving. A positive value means you received more value than you gave.
+
+Simple View:
+- (Player Given) - (Player Received) ==> (Selected team improvement) / (Other team improvement), difference: (difference in value between the player you received vs the player you gave)

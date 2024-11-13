@@ -78,6 +78,7 @@ const sendMessage = (tabId: number, message: LeagueDetailsMessage) => {
     }
 
     // Fetch the data with the original headers
+    console.log('calling fetch on: ' + message.url)
     fetch(message.url, { method: 'GET', headers })
         .then(response => {
             if (!response.ok) {
